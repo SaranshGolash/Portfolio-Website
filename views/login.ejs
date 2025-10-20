@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="padding-top: 5rem;">
+  <div class="container">
+    <h2>Admin Login</h2>
+    <form action="/login" method="POST" style="max-width: 400px; margin: auto;">
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+      <button type="submit" class="btn">Login</button>
+      
+      <% if (error) { %>
+        <p style="color: #FF8C00; margin-top: 1rem;"><%= error %></p>
+      <% } %>
+    </form>
+  </div>
+</body>
+</html>
