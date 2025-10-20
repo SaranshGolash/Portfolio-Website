@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- PASTE YOUR EMAIL.JS KEYS HERE ---
-  const SERVICE_ID = 'service_kguy2u3';
-  const TEMPLATE_ID = 'template_wquch4e';
-  const PUBLIC_KEY = 'pHcs_3o6GkNB5zYl3';
+  const SERVICE_ID = process.env.SERVICE_ID;
+  const TEMPLATE_ID = process.env.SERVICE_ID;
+  const PUBLIC_KEY = process.env.SERVICE_ID;
   
   // Initialize Email.js
   emailjs.init(PUBLIC_KEY);
