@@ -6,7 +6,7 @@ const apiRoutes = require('./routes/api');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // --- Middleware ---
 app.use(cors());
@@ -21,10 +21,6 @@ app.set('views', path.join(__dirname, 'views'));
 // --- Static Files Setup ---
 // Serve all files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
-
-// --- API Routes ---
-// This is for your chatbot
-app.use('/api', apiRoutes);
 
 // --- Page Routes ---
 /**
@@ -49,6 +45,9 @@ app.get('/', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+// --- API Routes ---
+// This is for your chatbot
+app.use('/api', apiRoutes);
 
 // --- Start Server ---
 app.listen(PORT, () => {
