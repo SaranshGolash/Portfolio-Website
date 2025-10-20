@@ -1,41 +1,52 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./db'); // Your db.js file
-const apiRoutes = require('./routes/api');
+const db = require('./db');
+const session = require('express-session'); // <-- ADD THIS
 require('dotenv').config();
 
+// --- Import Routes ---
+const apiRoutes = require('./routes/api');
+const adminRoutes = require('./routes/admin'); // <-- ADD THIS
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // --- Middleware ---
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // <-- ADD THIS (for forms)
 
 // --- EJS Setup ---
-// Set EJS as the view engine
 app.set('view engine', 'ejs');
-// Tell Express where to find EJS files
 app.set('views', path.join(__dirname, 'views'));
 
 // --- Static Files Setup ---
-// Serve all files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- Session Setup --- (ADD THIS SECTION)
+app.use(session({
+  secret: process.env.ADMIN_PASSWORD, // Use your password as the secret
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour session
+}));
+
+// --- API Routes ---
+app.use('/api', apiRoutes);
+
+// --- Admin Routes --- (ADD THIS)
+app.use('/', adminRoutes); // Use the new admin routes
+
 // --- Page Routes ---
-/**
- * This is the main route. It fetches data from your database
- * and then renders the HTML page, passing the data to EJS.
- */
 app.get('/', async (req, res) => {
   try {
-    // 1. Fetch projects from PostgreSQL
-    const { rows } = await db.query('SELECT * FROM projects');
+    // Order by ID to show newest projects first
+    const { rows } = await db.query('SELECT * FROM projects ORDER BY id DESC'); 
     
-    // 2. Render the index.ejs file
-    // 3. Pass the 'projects' data to the template
     res.render('index', {
       projects: rows,
+      // Pass the Email.js keys to the template
       emailServiceId: process.env.EMAILJS_SERVICE_ID,
       emailTemplateId: process.env.EMAILJS_TEMPLATE_ID,
       emailPublicKey: process.env.EMAILJS_PUBLIC_KEY
@@ -45,9 +56,6 @@ app.get('/', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-// --- API Routes ---
-// This is for your chatbot
-app.use('/api', apiRoutes);
 
 // --- Start Server ---
 app.listen(PORT, () => {
