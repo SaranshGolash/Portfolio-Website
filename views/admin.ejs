@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-container { padding: 2rem; max-width: 900px; margin: auto; }
+    .admin-form { background: #1a1a1a; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+    .admin-form h3 { border-bottom: 1px solid #333; padding-bottom: 1rem; }
+    .admin-form label { display: block; margin-top: 1rem; }
+    .project-list { list-style: none; }
+    .project-item { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <a href="/logout" class="btn" style="float: right;">Logout</a>
+    <h1>Admin Dashboard</h1>
+    
+    <form class="admin-form" action="/admin/add" method="POST">
+      <h3>Add New Project</h3>
+      <label for="title">Title</label>
+      <input type="text" name="title" required>
+      
+      <label for="description">Description</label>
+      <textarea name="description"></textarea>
+      
+      <label for="repo_link">Repo Link (e.g., GitHub)</label>
+      <input type="text" name="repo_link">
+      
+      <label for="thumbnail_url">Thumbnail URL (e.g., https://.../image.png)</label>
+      <input type="text" name="thumbnail_url" placeholder="Leave blank if using video">
+      
+      <label for="video_url">Video Embed URL (e.g., https://youtube.com/embed/...)</label>
+      <input type="text" name="video_url" placeholder="Leave blank if using thumbnail">
+      
+      <button type="submit" class="btn" style="margin-top: 1rem;">Add Project</button>
+    </form>
+    
+    <h2>Manage Projects</h2>
+    <ul class="project-list">
+      <% projects.forEach(project => { %>
+        <li class="project-item">
+          <span><%= project.title %></span>
+          <form action="/admin/delete/<%= project.id %>" method="POST" style="margin: 0;">
+            <button type="submit" class="btn" style="background: #8B0000; color: #fff;">Delete</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+</html>
