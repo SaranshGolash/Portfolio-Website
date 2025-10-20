@@ -39,7 +39,10 @@ app.get('/', async (req, res) => {
     // 2. Render the index.ejs file
     // 3. Pass the 'projects' data to the template
     res.render('index', {
-      projects: rows
+      projects: rows,
+      emailServiceId: process.env.EMAILJS_SERVICE_ID,
+      emailTemplateId: process.env.EMAILJS_TEMPLATE_ID,
+      emailPublicKey: process.env.EMAILJS_PUBLIC_KEY
     });
   } catch (err) {
     console.error(err.message);
