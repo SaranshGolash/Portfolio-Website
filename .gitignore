@@ -1,0 +1,7 @@
+# Environment variables (CRITICAL: NEVER commit these)
+.env
+.env.*
+!.env.example
+
+# Dependency directories
+node_modules/
