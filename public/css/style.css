@@ -228,6 +228,14 @@ textarea {
   max-width: 300px; /* Max size of avatar */
 }
 
+.avatar {
+  width: 100%;
+  height: auto;
+  border-radius: 50%; /* Makes it a circle */
+  border: 4px solid #FF8C00; /* Orange border */
+  box-shadow: 0 0 25px rgba(255, 140, 0, 0.3);
+}
+
 #hero-animation {
   width: 100%;
   height: auto;
