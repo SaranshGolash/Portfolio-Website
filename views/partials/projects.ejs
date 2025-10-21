@@ -1,13 +1,13 @@
 <section id="projects" class="section" style="background-color: #111;">
   <div class="container">
-    <h2 style="text-align: center;">My <span class="gradient-text">Projects</span></h2>
+    <h2 style="text-align: center;" data-aos="fade-up">My <span class="gradient-text">Projects</span></h2>
     <div class="card-grid">
       
       <% if (projects.length === 0) { %>
         <p>No projects to display yet.</p>
       <% } else { %>
-        <% projects.forEach(project => { %>
-          <div class="card">
+        <% projects.forEach((project, index) => { %>
+          <div class="card" data-aos="fade-up" data-aos-delay="<%= (index % 3) * 100 %>">
             
             <div class="project-media">
               <% if (project.video_url) { %>
