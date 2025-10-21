@@ -29,6 +29,41 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* --- Background Animation Canvas --- */
+#bg-animation {
+  position: fixed; /* Or absolute, depending on desired scroll effect */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Place it behind all other content */
+  display: block; /* Remove extra space below canvas */
+}
+
+/* Ensure main content sections have a background so they appear over the canvas */
+.section {
+  position: relative; /* Needed for z-index stacking context if using position:absolute above */
+  z-index: 1; /* Keep content above background */
+  /* If #bg-animation is fixed, ensure sections don't have transparent backgrounds */
+   /* background-color: #0a0a0a; /* Re-apply your body background */
+}
+/* You might need to adjust backgrounds for specific sections like #projects */
+#projects {
+   background-color: #111; /* Keep the dark project background */
+}
+
+/* Ensure navbar stays on top */
+.navbar {
+  position: sticky; /* Keep sticky behavior */
+  z-index: 100; /* High z-index */
+}
+
+/* Ensure chatbot stays on top */
+#chatbot-open-button,
+#chatbot-window {
+    z-index: 1000; /* Highest z-index */
+}
+
 h1, h2, h3 {
   margin-bottom: 1rem;
   color: #ffffff;
