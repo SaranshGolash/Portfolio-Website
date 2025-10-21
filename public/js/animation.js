@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const colorInside = new THREE.Color(0xff8c00); // Your orange
   const colorOutside = new THREE.Color(0x553300); // Darker orange/brown
-
   for (let i = 0; i < particleCount; i++) {
     const i3 = i * 3;
 
@@ -56,12 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
   particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   const particlesMaterial = new THREE.PointsMaterial({
-    size: 0.05, // Adjust particle size
-    sizeAttenuation: true, // Particles smaller further away
-    vertexColors: true, // Use the colors we defined
-    blending: THREE.AdditiveBlending, // Brighter where particles overlap
-    transparent: true,
-    depthWrite: false, // Prevents rendering issues with transparent particles
+    size: 0.07,
+    sizeAttenuation: true,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    transparent: true, // Make sure this is true
+    opacity: 0.2,      // ADD THIS LINE (Lower value = more transparent. Try 0.3 to 0.7)
+    depthWrite: false,
   });
 
   const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
