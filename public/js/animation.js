@@ -1,58 +1,81 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- Find the canvas ---
-  const canvas = document.querySelector('#hero-animation');
+  const canvas = document.querySelector('#bg-animation');
   if (!canvas) return;
-  const container = document.querySelector('.avatar-container');
-  if (!container) return;
 
   // --- 1. Scene and Camera ---
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
-    75, // Wider Field of View
-    1, // Aspect Ratio (1:1)
+    75,
+    window.innerWidth / window.innerHeight,
     0.1,
     1000
   );
-  camera.position.z = 4; // Position camera
+  camera.position.z = 5; // Start camera further back
 
   // --- 2. Renderer ---
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    alpha: true, // Transparent background
+    alpha: true, // Transparent background for canvas itself
     antialias: true,
   });
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(container.clientWidth, container.clientWidth);
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // --- 3. The Object (Icosahedron) ---
-  const geometry = new THREE.IcosahedronGeometry(1.5, 0); // Radius 1.5, subdivision 0
+  // --- 3. Particles ---
+  const particleCount = 5000;
+  const positions = new Float32Array(particleCount * 3); // x, y, z for each particle
+  const colors = new Float32Array(particleCount * 3); // r, g, b for each particle
 
-  // The cool rainbow material
-  const material = new THREE.MeshNormalMaterial({
-    flatShading: true, // Gives it a faceted, low-poly look
+  const colorInside = new THREE.Color(0xff8c00); // Your orange
+  const colorOutside = new THREE.Color(0x553300); // Darker orange/brown
+
+  for (let i = 0; i < particleCount; i++) {
+    const i3 = i * 3;
+
+    // Position particles randomly in a sphere shape
+    const radius = Math.random() * 10; // Adjust spread
+    const phi = Math.acos(-1 + (2 * Math.random()));
+    const theta = Math.sqrt(particleCount * Math.PI) * phi;
+
+    positions[i3] = radius * Math.cos(theta) * Math.sin(phi);
+    positions[i3 + 1] = radius * Math.sin(theta) * Math.sin(phi);
+    positions[i3 + 2] = radius * Math.cos(phi);
+
+    // Color particles based on distance from center (orange near center, darker further out)
+    const mixedColor = colorInside.clone();
+    mixedColor.lerp(colorOutside, radius / 10); // Lerp towards outside color
+
+    colors[i3] = mixedColor.r;
+    colors[i3 + 1] = mixedColor.g;
+    colors[i3 + 2] = mixedColor.b;
+  }
+
+  const particlesGeometry = new THREE.BufferGeometry();
+  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  const particlesMaterial = new THREE.PointsMaterial({
+    size: 0.05, // Adjust particle size
+    sizeAttenuation: true, // Particles smaller further away
+    vertexColors: true, // Use the colors we defined
+    blending: THREE.AdditiveBlending, // Brighter where particles overlap
+    transparent: true,
+    depthWrite: false, // Prevents rendering issues with transparent particles
   });
 
-  const icosahedron = new THREE.Mesh(geometry, material);
-  scene.add(icosahedron);
+  const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particleSystem);
 
-  // --- 4. Lighting (Simpler) ---
-  // MeshNormalMaterial doesn't really need complex lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-  scene.add(ambientLight);
-
-  // --- 5. Mouse Interaction ---
-  let targetRotationX = 0;
-  let targetRotationY = 0;
-  let mouseX = 0, mouseY = 0;
-
-  const onMouseMove = (event) => {
-    // Normalize mouse position (-1 to +1)
+  // --- 4. Mouse Interaction ---
+  let mouseX = 0;
+  let mouseY = 0;
+  document.addEventListener('mousemove', (event) => {
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-  };
-  document.addEventListener('mousemove', onMouseMove);
+  });
 
-  // --- 6. Animation Loop ---
+  // --- 5. Animation Loop ---
   const clock = new THREE.Clock();
 
   const animate = () => {
@@ -60,30 +83,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const elapsedTime = clock.getElapsedTime();
 
-    // Slow auto-rotation
-    icosahedron.rotation.y = 0.2 * elapsedTime;
-    icosahedron.rotation.x = 0.1 * elapsedTime;
+    // Rotate the whole particle system slowly
+    particleSystem.rotation.y = elapsedTime * 0.1;
+    particleSystem.rotation.x = elapsedTime * 0.05;
 
-    // Mouse follow effect (subtle)
-    targetRotationY = mouseX * 0.5;
-    targetRotationX = mouseY * 0.5;
+    // Make the camera subtly react to mouse movement
+    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+    camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
+    camera.lookAt(scene.position); // Ensure camera always looks at the center
 
-    // Apply mouse rotation smoothly
-    icosahedron.rotation.y += (targetRotationY - icosahedron.rotation.y) * 0.05;
-    icosahedron.rotation.x += (targetRotationX - icosahedron.rotation.x) * 0.05;
-
-    // Render the scene
     renderer.render(scene, camera);
   };
 
-  animate(); // Start the animation
+  animate();
 
-  // --- 7. Handle Resize ---
-  const onWindowResize = () => {
-    const size = container.clientWidth;
-    camera.aspect = 1;
+  // --- 6. Handle Resize ---
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(size, size);
-  };
-  window.addEventListener('resize', onWindowResize);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  });
 });
