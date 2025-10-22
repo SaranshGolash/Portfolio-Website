@@ -317,6 +317,19 @@ textarea {
   .container {
     padding: 0 1.5rem;
   }
+
+  /* Stack avatar and text vertically */
+  .container.home-container {
+    flex-direction: column; 
+    text-align: center; 
+    gap: 2rem;
+  }
+
+  /* Center the <p> tag again on mobile */
+  .home-content p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
 
@@ -357,27 +370,13 @@ textarea {
 
   /* --- Project Cards --- */
   .card-grid {
-    /* Stack cards in a single column */
     grid-template-columns: 1fr;
   }
 
   /* --- Contact Form --- */
-  /* Make form inputs slightly smaller */
   input[type='text'],
   input[type='email'],
   textarea {
     padding: 0.7rem;
   }
-}
-
-.home-container {
-  flex-direction: column; /* Stack vertically on mobile */
-  text-align: center; /* Center everything on mobile */
-  gap: 2rem;
-}
-
-/* Center the <p> tag again on mobile */
-.home-content p {
-  margin-left: auto !important;
-  margin-right: auto !important;
 }
