@@ -169,6 +169,7 @@ textarea {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  perspective: 1000px;
 }
 
 .card {
@@ -176,11 +177,12 @@ textarea {
   border: 1px solid #222;
   border-radius: 8px;
   padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, border-color 0.3s ease;
+  position: relative;
+  transform-style: preserve-3d;
 }
 
 .card:hover {
-  transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(255, 140, 0, 0.1);
   border-color: #FF8C00;
 }
