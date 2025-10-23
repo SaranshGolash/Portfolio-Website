@@ -45,9 +45,9 @@ body {
   position: relative; /* Needed for z-index stacking context if using position:absolute above */
   z-index: 1; /* Keep content above background */
 }
-/* You might need to adjust backgrounds for specific sections like #projects */
+
 #projects {
-   background-color: #111; /* Keep the dark project background */
+   background-color: transparent;
 }
 
 /* Ensure navbar stays on top */
